@@ -14,22 +14,16 @@ def main():
         key = bytes(chr(i) * l, 'ascii')
         phrase = utils.xor_eq_buffers(key, text)
         scores[i] = utils.score_characters(phrase)
-    high_scores = top_keys(scores, 10)
 
-    for k in high_scores:
-        key = bytes(chr(k) * l, 'ascii')
-        print(chr(k), scores[k], utils.xor_eq_buffers(key, text))
+    max_score = 0
+    max_k = ''
+    for k, v in scores.items():
+        if v > max_score:
+            max_k = k
+            max_score = v
 
-
-# There has to be a better way to do this
-def top_keys(d, n):
-    top = [0] * n
-    for k, v in d.items():
-        m = min(top)
-        if v > d[m]:
-            i = top.index(m)
-            top[i] = k
-    return top
+    key = bytes(chr(max_k) * l, 'ascii')
+    print(chr(max_k), max_score, utils.xor_eq_buffers(key, text))
 
 if __name__ == '__main__':
     main()
