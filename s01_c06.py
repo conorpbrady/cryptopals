@@ -28,18 +28,19 @@
 import utils
 import math
 from base64 import b64decode
+from itertools import combinations
 
 # Average normalized hamming distance between a num of blocks
-# This will check b1 against b2, b2 against b3, b3 against b4, then avg
 def avg_nhd(ciphertext, block_size, num_blocks):
     blocks = []
     for n in range(num_blocks):
         blocks.append(ciphertext[block_size * n: block_size * (n+1)])
 
     sum_nhd = 0
-    for i in range(len(blocks) - 1):
-       sum_nhd += utils.hamming_distance(blocks[i], blocks[i+1]) / block_size
-    return sum_nhd / (num_blocks - 1)
+    combos = list(combinations([i for i in range(num_blocks)], 2))
+    for c in combos:
+        sum_nhd += utils.hamming_distance(blocks[c[0]], blocks[c[1]]) / block_size
+    return sum_nhd / len(combos)
 
 def main():
     ciphertext = b64decode(''.join(utils.read_file('s01_c06.txt')))
